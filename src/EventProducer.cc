@@ -341,10 +341,8 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         // Scale variations
         for (auto& m: m_scale_variations_matching) {
             float weight = lhe_info->weights()[m.second].wgt / lhe_weight_nominal_weight;
-            if (std::isnan(weight) /*|| weight > 10.*/) {
-#ifdef DEBUG_PDF
+            if ((weight < 0.1) || (weight > 10.)) {
                 std::cout << "Corrupted scale weight #" << scale_weights.size() << std::endl;
-#endif
                 weight = 1.;
             }
             scale_weights.push_back(weight);
@@ -403,9 +401,8 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
                 std::cout << "Computed weight #" << i + 1 << " = " << weight << " (raw LHE weight: " << lhe_info->weights()[m_pdf_weights_matching[i].second].wgt << ")" << std::endl;
 #endif
                 // On some samples, some PDF weights are corrupted (value close to 0, very high or even NaN). If we detect such a weight, consider the event as corrupted, and force pdf_weight to be one without uncertainty.
-                if (std::isnan(weight) /*|| weight < 0.4 || weight > 2.5*/) {
-                    weight = 1;
-                    //corrupted_event = true;
+                if (std::isnan(weight) || weight < 0.4 || weight > 2.5) {
+                    corrupted_event = true;
                     break;
                 }
                 mean += weight;
