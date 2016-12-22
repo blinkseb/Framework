@@ -40,6 +40,9 @@ popd
 # Electron regression
 git cms-merge-topic rafaellopesdesa:Regression80XEgammaAnalysis
 
+# Electron smearing
+git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
+
 scram b -j 4
 
 # Add the area containing the MVA weights (from cms-data, to appear in “external”).
@@ -48,7 +51,9 @@ cd ${CMSSW_BASE}/external/${SCRAM_ARCH}
 git clone https://github.com/ikrav/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data
 cd data/RecoEgamma/ElectronIdentification/data
 git checkout egm_id_80X_v1
-cd ${CMSSW_BASE}/src
+
+cd ${CMSSW_BASE}/src/EgammaAnalysis/ElectronTools/data
+git clone https://github.com/ECALELFS/ScalesSmearings.git
 
 cd ${CMSSW_BASE}/src/cp3_llbb/Framework
 source first_setup.sh
